@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f1113">
+<meta name="description" content="Mobile barcode scanner for reselling inventory management">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>ReScanner — Reselling Inventory Scanner</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="logo" aria-label="ReScanner">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <rect x="2" y="4" width="3" height="20" rx="1" fill="currentColor"/>
+          <rect x="7" y="4" width="2" height="20" rx="0.5" fill="currentColor" opacity="0.7"/>
+          <rect x="11" y="4" width="4" height="20" rx="1" fill="currentColor"/>
+          <rect x="17" y="4" width="2" height="20" rx="0.5" fill="currentColor" opacity="0.7"/>
+          <rect x="21" y="4" width="5" height="20" rx="1" fill="currentColor"/>
+          <path d="M1 8 L1 4 Q1 1, 4 1 L8 1" stroke="var(--color-primary)" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M27 8 L27 4 Q27 1, 24 1 L20 1" stroke="var(--color-primary)" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M1 20 L1 24 Q1 27, 4 27 L8 27" stroke="var(--color-primary)" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M27 20 L27 24 Q27 27, 24 27 L20 27" stroke="var(--color-primary)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span class="logo-text">ReScanner</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tab-bar" role="tablist" aria-label="Main navigation">
+    <button role="tab" class="tab active" aria-selected="true" data-tab="scan" id="tab-scan">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+      Scan
+    </button>
+    <button role="tab" class="tab" aria-selected="false" data-tab="manual" id="tab-manual">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Manual
+    </button>
+    <button role="tab" class="tab" aria-selected="false" data-tab="history" id="tab-history">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      History
+    </button>
+  </nav>
+
+  <main class="main-content">
+    <!-- SCAN TAB -->
+    <section class="tab-panel active" id="panel-scan" role="tabpanel" aria-labelledby="tab-scan">
+      <div class="scanner-container">
+        <div class="scanner-viewport" id="scanner-viewport">
+          <div class="scanner-placeholder" id="scanner-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <p>Tap to start scanning</p>
+          </div>
+          <div class="scanner-overlay" id="scanner-overlay" hidden>
+            <div class="scan-line"></div>
+          </div>
+        </div>
+        <div class="scanner-actions">
+          <button class="btn btn-primary btn-lg" id="btn-start-scan">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Start Scanner
+          </button>
+          <button class="btn btn-outline" id="btn-stop-scan" hidden>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+            Stop
+          </button>
+        </div>
+        <div class="manual-barcode-input">
+          <label for="barcode-input" class="sr-only">Enter barcode manually</label>
+          <input type="text" id="barcode-input" inputmode="numeric" placeholder="Or type barcode number…" autocomplete="off">
+          <button class="btn btn-primary btn-sm" id="btn-lookup">Look Up</button>
+        </div>
+      </div>
+
+      <!-- Lookup result area -->
+      <div class="lookup-result" id="lookup-result" hidden>
+        <div class="result-header">
+          <h2 id="result-title">Product Found</h2>
+          <button class="btn-icon" id="btn-close-result" aria-label="Close result">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="result-info" id="result-info"></div>
+      </div>
+
+      <!-- Scanned item form -->
+      <div class="item-form-wrap" id="scan-form-wrap" hidden>
+        <h2 class="form-title">Complete Item Details</h2>
+        <form class="item-form" id="scan-item-form">
+          <input type="hidden" id="scan-barcode" name="barcode">
+          <div class="form-group">
+            <label for="scan-name">Item Name <span class="required">*</span></label>
+            <input type="text" id="scan-name" name="name" required autocomplete="off">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="scan-category">Category</label>
+              <select id="scan-category" name="category">
+                <option value="">Select…</option>
+                <option>Electronics</option>
+                <option>Clothing</option>
+                <option>Shoes</option>
+                <option>Books</option>
+                <option>Toys</option>
+                <option>Home & Garden</option>
+                <option>Sports</option>
+                <option>Collectibles</option>
+                <option>Tools</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="scan-brand">Brand</label>
+              <input type="text" id="scan-brand" name="brand" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="scan-condition">Condition</label>
+              <select id="scan-condition" name="condition">
+                <option value="">Select…</option>
+                <option>New</option>
+                <option>Like New</option>
+                <option>Very Good</option>
+                <option>Good</option>
+                <option>Acceptable</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="scan-source">Source</label>
+              <select id="scan-source" name="source">
+                <option value="">Select…</option>
+                <option>Thrift Store</option>
+                <option>Garage Sale</option>
+                <option>Estate Sale</option>
+                <option>Clearance</option>
+                <option>Wholesale</option>
+                <option>Online</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="scan-purchase-price">Purchase Price</label>
+              <div class="input-prefix">
+                <span>$</span>
+                <input type="number" id="scan-purchase-price" name="purchasePrice" step="0.01" min="0" inputmode="decimal">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="scan-listing-price">Listing Price</label>
+              <div class="input-prefix">
+                <span>$</span>
+                <input type="number" id="scan-listing-price" name="listingPrice" step="0.01" min="0" inputmode="decimal">
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="scan-platform">Platform</label>
+              <select id="scan-platform" name="platform">
+                <option value="">Select…</option>
+                <option>eBay</option>
+                <option>Facebook Marketplace</option>
+                <option>Poshmark</option>
+                <option>Mercari</option>
+                <option>Amazon</option>
+                <option>Offerup</option>
+                <option>Craigslist</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="scan-storage">Storage Location</label>
+              <input type="text" id="scan-storage" name="storageLocation" autocomplete="off" placeholder="e.g. Bin A3">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="scan-notes">Notes</label>
+            <textarea id="scan-notes" name="notes" rows="2" placeholder="Any extra details…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Photo</label>
+            <div class="photo-capture">
+              <button type="button" class="btn btn-outline btn-photo" id="scan-photo-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Take Photo
+              </button>
+              <input type="file" accept="image/*" capture="environment" id="scan-photo-input" class="sr-only">
+              <div class="photo-preview" id="scan-photo-preview" hidden>
+                <img id="scan-photo-img" alt="Item photo">
+                <button type="button" class="btn-icon btn-remove-photo" id="scan-remove-photo" aria-label="Remove photo">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Save Item
+            </button>
+            <button type="button" class="btn btn-outline" id="scan-copy-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Row
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- MANUAL ENTRY TAB -->
+    <section class="tab-panel" id="panel-manual" role="tabpanel" aria-labelledby="tab-manual" hidden>
+      <div class="item-form-wrap">
+        <h2 class="form-title">Add Item Manually</h2>
+        <form class="item-form" id="manual-item-form">
+          <div class="form-group">
+            <label for="manual-name">Item Name <span class="required">*</span></label>
+            <input type="text" id="manual-name" name="name" required autocomplete="off">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="manual-category">Category</label>
+              <select id="manual-category" name="category">
+                <option value="">Select…</option>
+                <option>Electronics</option>
+                <option>Clothing</option>
+                <option>Shoes</option>
+                <option>Books</option>
+                <option>Toys</option>
+                <option>Home & Garden</option>
+                <option>Sports</option>
+                <option>Collectibles</option>
+                <option>Tools</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="manual-brand">Brand</label>
+              <input type="text" id="manual-brand" name="brand" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="manual-condition">Condition</label>
+              <select id="manual-condition" name="condition">
+                <option value="">Select…</option>
+                <option>New</option>
+                <option>Like New</option>
+                <option>Very Good</option>
+                <option>Good</option>
+                <option>Acceptable</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="manual-source">Source</label>
+              <select id="manual-source" name="source">
+                <option value="">Select…</option>
+                <option>Thrift Store</option>
+                <option>Garage Sale</option>
+                <option>Estate Sale</option>
+                <option>Clearance</option>
+                <option>Wholesale</option>
+                <option>Online</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="manual-purchase-price">Purchase Price</label>
+              <div class="input-prefix">
+                <span>$</span>
+                <input type="number" id="manual-purchase-price" name="purchasePrice" step="0.01" min="0" inputmode="decimal">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="manual-listing-price">Listing Price</label>
+              <div class="input-prefix">
+                <span>$</span>
+                <input type="number" id="manual-listing-price" name="listingPrice" step="0.01" min="0" inputmode="decimal">
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="manual-platform">Platform</label>
+              <select id="manual-platform" name="platform">
+                <option value="">Select…</option>
+                <option>eBay</option>
+                <option>Facebook Marketplace</option>
+                <option>Poshmark</option>
+                <option>Mercari</option>
+                <option>Amazon</option>
+                <option>Offerup</option>
+                <option>Craigslist</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="manual-storage">Storage Location</label>
+              <input type="text" id="manual-storage" name="storageLocation" autocomplete="off" placeholder="e.g. Bin A3">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="manual-notes">Notes</label>
+            <textarea id="manual-notes" name="notes" rows="2" placeholder="Any extra details…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Photo</label>
+            <div class="photo-capture">
+              <button type="button" class="btn btn-outline btn-photo" id="manual-photo-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Take Photo
+              </button>
+              <input type="file" accept="image/*" capture="environment" id="manual-photo-input" class="sr-only">
+              <div class="photo-preview" id="manual-photo-preview" hidden>
+                <img id="manual-photo-img" alt="Item photo">
+                <button type="button" class="btn-icon btn-remove-photo" id="manual-remove-photo" aria-label="Remove photo">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Save Item
+            </button>
+            <button type="button" class="btn btn-outline" id="manual-copy-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Row
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- HISTORY TAB -->
+    <section class="tab-panel" id="panel-history" role="tabpanel" aria-labelledby="tab-history" hidden>
+      <div class="history-header">
+        <h2 class="form-title">Session History</h2>
+        <div class="history-actions">
+          <button class="btn btn-outline btn-sm" id="btn-download-csv">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            CSV
+          </button>
+          <button class="btn btn-outline btn-sm btn-danger" id="btn-clear-session">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Clear
+          </button>
+        </div>
+      </div>
+      <div class="history-list" id="history-list">
+        <div class="empty-state" id="empty-history">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          <h3>No items yet</h3>
+          <p>Scan a barcode or add items manually to start your session.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom stats bar -->
+  <footer class="bottom-bar">
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-value" id="stat-count">0</span>
+        <span class="stat-label">items</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-value" id="stat-spent">$0.00</span>
+        <span class="stat-label">invested</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-value" id="stat-potential">$0.00</span>
+        <span class="stat-label">potential</span>
+      </div>
+    </div>
+    <div class="attribution">
+      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+    </div>
+  </footer>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
